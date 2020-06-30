@@ -95,7 +95,7 @@ long LinuxParser::UpTime() {
   string line;
   string totalUpTime;
   float returnUpTime = 0;
-  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  std::ifstream filestream(kProcDirectory + kUptimeFilename);
     if(filestream.is_open()) {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
