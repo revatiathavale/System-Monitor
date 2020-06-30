@@ -73,7 +73,7 @@ float LinuxParser::MemoryUtilization() {
   string line;
   string key;
   float value;
-  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  std::ifstream filestream(kProcDirectory + kUptimeFilename);
     if(filestream.is_open()) {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
@@ -100,7 +100,7 @@ long LinuxParser::UpTime() {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
         if(linestream >> totalUpTime) {
-          returnUpTime = std::stof(totalUpTime);
+          returnUpTime = stof(totalUpTime);
         }
       }
     }
