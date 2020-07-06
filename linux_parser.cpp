@@ -6,6 +6,7 @@
 #include "linux_parser.h"
 
 using std::stof;
+using std::stol;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -145,6 +146,7 @@ long LinuxParser::ActiveJiffies(int pid) {
 long LinuxParser::ActiveJiffies() { 
   string line;
   string cpu;
+  string jiffiesString;
   float jiffies = 0;
   std::ifstream filestream(kProcDirectory + kStatFilename);
     if(filestream.is_open()) {
@@ -197,6 +199,7 @@ long LinuxParser::IdleJiffies() {
           string j5 = jiffiesString.substr(space4 + 1);
           int space5 = j5.find(" ");
           jiffies = jiffies + stol(jiffiesString.substr(space3 + 1, space4 - 1)) + stol(jiffiesString.substr(space4 + 1, space5 - 1));
+        }
       }
     }
   return jiffies;
