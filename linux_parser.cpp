@@ -73,7 +73,7 @@ float LinuxParser::MemoryUtilization() {
   string line;
   string key;
   float value;
-  std::ifstream filestream(kProcDirectory + kUptimeFilename);
+  std::ifstream filestream(kProcDirectory + kMemFilename);
     if(filestream.is_open()) {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
@@ -108,17 +108,99 @@ long LinuxParser::UpTime() {
 }
 
 // TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+long LinuxParser::Jiffies() { 
+  return LinuxParser::UpTime() * sysconf(_SC_CLK_TCK);
+}
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+long LinuxParser::ActiveJiffies(int pid) { 
+  string line;
+  string utime;
+  string stime;
+  string cutime;
+  string cstime;
+  float totalJiffies = 0;
+  std::ifstream filestream(kProcDirectory + k<pid>StatFilename);
+  if(filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      if(linestream >> utime) {
+        totalJiffies += stof(utime);
+      }
+      if(linestream >> stime) {
+        totalJiffies += stof(stime);
+      }
+      if(linestream >> cutime) {
+        totalJiffies += stof(cutime);
+      }
+      if(linestream >> cstime) {
+        totalJiffies += stof(cstime);
+      }
+    }
+  }
+  return totalJiffies; }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() { 
+  string line;
+  string cpu;
+  float jiffies = 0;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+    if(filestream.is_open()) {
+      while (std::getline(filestream, line)) {
+        std::istringstream linestream(line);
+        if(linestream >> cpu) {
+            jiffiesString = cpu;
+            int space1 = jiffiesString.find(" ");
+            string j2 = jiffiesString.substr(space1 + 1);
+            int space2 = j2.find(" ");
+            string j3 = jiffiesString.substr(space2 + 1);
+            int space3 = j3.find(" ");
+            string j4 = jiffiesString.substr(space3 + 1);
+            int space4 = j4.find(" ");
+            string j5 = jiffiesString.substr(space4 + 1);
+            int space5 = j5.find(" ");
+            string j6 = jiffiesString.substr(space5 + 1);
+            int space6 = j6.find(" ");
+            string j7 = jiffiesString.substr(space6 + 1);
+            int space7 = j7.find(" ");
+            jiffies = jiffies + stol(jiffiesString.substr(0, space1 - 1)) + stol(jiffiesString.substr(space1 + 1, space2 - 1)) + stol(jiffiesString.substr(space2 + 1, space3 - 1)) + stol(jiffiesString.substr(space5 + 1, space6 - 1)) + stol(jiffiesString.substr(space6 + 1, space7 - 1)) + stol(jiffiesString.substr(space7 + 1, jiffiesString.length()));
+        }
+      }
+    }
+  return jiffies;
+}
+
+long ActiveJiffiesHelper(string jiffiesString) {
+}
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() {
+  string line;
+  string cpu;
+  string jiffiesString;
+  float jiffies = 0;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+    if(filestream.is_open()) {
+      while (std::getline(filestream, line)) {
+        std::istringstream linestream(line);
+        if(linestream >> cpu) {
+          jiffiesString = cpu;
+          int space1 = jiffiesString.find(" ");
+          string j2 = jiffiesString.substr(space1 + 1);
+          int space2 = j2.find(" ");
+          string j3 = jiffiesString.substr(space2 + 1);
+          int space3 = j3.find(" ");
+          string j4 = jiffiesString.substr(space3 + 1);
+          int space4 = j4.find(" ");
+          string j5 = jiffiesString.substr(space4 + 1);
+          int space5 = j5.find(" ");
+          jiffies = jiffies + stol(jiffiesString.substr(space3 + 1, space4 - 1)) + stol(jiffiesString.substr(space4 + 1, space5 - 1));
+      }
+    }
+  return jiffies;
+}
 
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { return {}; }
