@@ -7,6 +7,7 @@
 
 using std::stof;
 using std::stol;
+using std::stoi;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -74,7 +75,7 @@ float LinuxParser::MemoryUtilization() {
   string line;
   string key;
   float value;
-  std::ifstream filestream(kProcDirectory + kMemFilename);
+  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
     if(filestream.is_open()) {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
@@ -174,9 +175,6 @@ long LinuxParser::ActiveJiffies() {
   return jiffies;
 }
 
-long ActiveJiffiesHelper(string jiffiesString) {
-}
-
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() {
   string line;
@@ -209,10 +207,37 @@ long LinuxParser::IdleJiffies() {
 vector<string> LinuxParser::CpuUtilization() { return {}; }
 
 // TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+int LinuxParser::TotalProcesses() { 
+  string line;
+  string processes;
+  int returnValue = 0;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+    if(filestream.is_open()) {
+      while (std::getline(filestream, line)) {
+        std::istringstream linestream(line);
+        if(linestream >> processes) {
+          returnValue = stoi(processes);
+        }
+      }
+    }
+  return returnValue;
+}
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses() {
+  string line;
+  string procs_running;
+  int returnValue = 0;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+    if(filestream.is_open()) {
+      while (std::getline(filestream, line)) {
+        std::istringstream linestream(line);
+        if(linestream >> procs_running) {
+          returnValue = stoi(procs_running);
+        }
+      }
+    }
+  return returnValue; }
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
