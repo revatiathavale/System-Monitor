@@ -1,47 +1,31 @@
-#include <unistd.h>
-#include <cctype>
-#include <sstream>
+#ifndef PROCESS_H
+#define PROCESS_H
+
 #include <string>
-#include <vector>
 
-#include "process.h"
-#include "linux_parser.h"
+/*
+Basic class for Process representation
+It contains relevant attributes as shown below
+*/
+class Process {
+ public:
+  Process(int pid);
+  int Pid();                               // TODO: See src/process.cpp
+  std::string User();                      // TODO: See src/process.cpp
+  std::string Command();                   // TODO: See src/process.cpp
+  float CpuUtilization() const;                  // TODO: See src/process.cpp
+  std::string Ram();                       // TODO: See src/process.cpp
+  long UpTime();                       // TODO: See src/process.cpp
+  bool operator<(Process const& a) const;  // TODO: See src/process.cpp
+  
+  // TODO: Declare any necessary private members
+ private:
+  int pid_;
+  float cpu_;
+  std::string command_;
+  std::string ram_;
+  std::string user_;
+  long uptime_;
+};
 
-using std::string;
-using std::to_string;
-using std::vector;
-
-Process::Process(int pid)
-{   
-    pid_ = pid;
-    cpu_= LinuxParser::CpuUtilization();
-    command_ = LinuxParser::Command(pid_);
-    ram_= LinuxParser::Ram(pid_);
-    user_ = LinuxParser::User(pid_);
-    uptime_= LinuxParser::UpTime(pid_);
-    
-}
-
-// TODO: Return this process's ID
-int Process::Pid() { return pid_; }
-
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() const { return cpu_; }
-
-// TODO: Return the command that generated this process
-string Process::Command() { return command_; }
-
-// TODO: Return this process's memory utilization
-string Process::Ram() { return ram_; }
-
-// TODO: Return the user (name) that generated this process
-string Process::User() { return user_; }
-
-// TODO: Return the age of this process (in seconds)
-long Process::UpTime() { return uptime_; }
-
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a) const {
-  return a.CpuUtilization() < this->CpuUtilization();
-}
+#endif
