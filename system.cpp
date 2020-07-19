@@ -8,6 +8,7 @@
 #include "processor.h"
 #include "system.h"
 #include "linux_parser.h"
+#include "format.h"
 
 using std::set;
 using std::size_t;
@@ -19,12 +20,13 @@ Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
+  processes_.clear();
   vector<Process> processes_;
-  for (int pid : LinuxParser::Pids()){
-    Process process;
-    process.Pid();
+  for (int pid : LinuxParser::Pids()) {
+    Process process(pid);
     processes_.push_back(process);
   }
+  std::sort(processes_.begin(), processes_.end());
   return processes_;
 }
 
@@ -44,4 +46,4 @@ int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 // TODO: Return the number of seconds since the system started running
-long int System::UpTime() { return LinuxParser::UpTime(); }
+long System::UpTime() { return 100; }
